@@ -17,3 +17,18 @@ Clone the repo and install dependencies (recommend using a virtual environment):
 git clone https://github.com/amartaivan-s/abms/diffusion-model.git
 cd diffusion-model
 pip install -r requirements.txt
+
+## ▶️ Run
+
+Launch the server:
+
+```bash
+python server.py
+```
+
+Then open `http://127.0.0.1:8521` in your browser.
+
+## �� Reference
+
+* Schelling, T. C. (1971). *Dynamic Models of Segregation*. Journal of Mathematical Sociology, 1(2), 143–186.
+* Epstein, J. M., & Axtell, R. (1996). *Growing Artificial Societies*. Brookings Institution Press.
