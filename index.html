@@ -1,299 +1,98 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Agent‑Based Diffusion Models — Showcase</title>
-  <meta name="description" content="Showcase of agent‑based diffusion models: social news spreading, innovation adoption, and more. Built with Mesa for grid visualizations and interactive demos." />
+  <meta charset="UTF-8">
+  <title>Agent-Based Modeling Showcase</title>
   <style>
-    :root {
-      --bg: #0b0f1a;
-      --card: #121829;
-      --muted: #8aa0b9;
-      --text: #e6eef7;
-      --accent: #7dd3fc;
-      --accent-2: #a78bfa;
-      --success: #34d399;
-      --warn: #fbbf24;
-      --danger: #f87171;
-      --radius: 18px;
-      --shadow: 0 10px 30px rgba(0,0,0,.35);
-    }
-    * { box-sizing: border-box; }
-    body { margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji"; background: linear-gradient(180deg, #0b0f1a 0%, #0e1422 100%); color: var(--text); }
-    a { color: var(--accent); text-decoration: none; }
+    body { font-family: sans-serif; padding: 2rem; line-height: 1.6; }
+    img, video { max-width: 100%; height: auto; margin: 1rem 0; }
+    .section { margin-bottom: 2rem; }
+    h1, h2 { color: #2c3e50; }
+    a { color: #1f77b4; text-decoration: none; }
     a:hover { text-decoration: underline; }
-    .container { max-width: 1100px; margin: 0 auto; padding: 24px; }
-    header { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 18px 0; position: sticky; top: 0; background: rgba(11,15,26,.75); backdrop-filter: blur(6px); z-index: 10; }
-    .brand { display: flex; align-items: center; gap: 12px; font-weight: 700; letter-spacing: .3px; }
-    .brand .logo { width: 36px; height: 36px; border-radius: 50%; background: radial-gradient(circle at 30% 30%, var(--accent), var(--accent-2)); box-shadow: var(--shadow); }
-    nav a { margin-left: 16px; font-weight: 600; color: var(--muted); }
-    nav a.active, nav a:hover { color: var(--text); }
-
-    .hero { display: grid; grid-template-columns: 1.1fr .9fr; gap: 28px; align-items: center; padding: 42px 0 8px; }
-    .hero h1 { font-size: clamp(28px, 4vw, 42px); line-height: 1.1; margin: 0 0 12px; }
-    .hero p { color: var(--muted); margin: 0 0 20px; font-size: 1.05rem; }
-    .cta { display: flex; gap: 12px; flex-wrap: wrap; }
-    .btn { display: inline-flex; align-items: center; gap: 10px; padding: 12px 16px; border-radius: 999px; font-weight: 700; border: 1px solid rgba(255,255,255,.08); background: #1d2437; color: var(--text); }
-    .btn.primary { background: linear-gradient(90deg, var(--accent), var(--accent-2)); color: #0b0f1a; }
-    .btn:hover { filter: brightness(1.05); text-decoration: none; }
-
-    .card { background: linear-gradient(180deg, #121829, #0f1526); border: 1px solid rgba(255,255,255,.06); border-radius: var(--radius); box-shadow: var(--shadow); padding: 20px; }
-    .pill { display: inline-flex; align-items: center; gap: 8px; padding: 6px 10px; border-radius: 999px; font-size: 12px; color: #0b0f1a; font-weight: 700; background: var(--accent); }
-
-    .media { width: 100%; aspect-ratio: 16/9; border-radius: var(--radius); background: radial-gradient(100% 100% at 0% 0%, rgba(125,211,252,.2), rgba(167,139,250,.1) 40%, transparent 80%), #0c1222; display: grid; place-items: center; color: var(--muted); border: 1px dashed rgba(255,255,255,.18); }
-
-    section { padding: 40px 0; }
-    h2 { font-size: clamp(22px, 3vw, 32px); margin: 0 0 16px; }
-    h3 { margin: 16px 0 8px; font-size: 1.15rem; }
-    p { line-height: 1.6; }
-    .grid { display: grid; gap: 18px; }
-    .grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
-    .grid.cols-2 { grid-template-columns: repeat(2, 1fr); }
-    @media (max-width: 920px) { .hero { grid-template-columns: 1fr; } .grid.cols-3 { grid-template-columns: 1fr; } .grid.cols-2 { grid-template-columns: 1fr; } }
-
-    .kpi { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 8px; }
-    .kpi .card { text-align: center; padding: 16px; }
-    .kpi .num { font-size: 1.4rem; font-weight: 800; }
-    .badge { display: inline-block; padding: 4px 10px; border-radius: 999px; background: #1d2437; color: var(--muted); font-size: 12px; border: 1px solid rgba(255,255,255,.06); }
-    footer { padding: 48px 0 60px; color: var(--muted); }
-    code { background: #0d1322; padding: 2px 6px; border-radius: 6px; border: 1px solid rgba(255,255,255,.06); }
-    ul { margin: 8px 0 16px 22px; }
-    li { margin: 6px 0; }
+    .citation { font-size: 0.9rem; color: #555; }
   </style>
 </head>
 <body>
-  <p><a href="https://amartaivan-s.github.io/">🏠 Home</a></p>
 
-  <div class="container">
-    <header>
-      <div class="brand">
-        <div class="logo" aria-hidden="true"></div>
-        <div>ABM Diffusion Showcase</div>
-      </div>
-      <nav aria-label="Primary">
-        <a href="#overview" class="active">Overview</a>
-        <a href="#why-abm">Why ABM?</a>
-        <a href="#scenarios">Scenarios</a>
-        <a href="#modeling">Modeling Patterns</a>
-        <a href="#visuals">Visuals</a>
-        <a href="#demos">Demos</a>
-      </nav>
-    </header>
+<p><a href="https://amartaivan-s.github.io/">🏠 Home</a></p>
 
-    <section class="hero" id="overview">
-      <div>
-        <span class="pill" aria-label="Project Type">Agent‑Based Simulation</span>
-        <h1>Diffusion in Complex Systems: <br/>From Social News to Innovation Adoption</h1>
-        <p>
-          This page showcases a collection of <strong>agent‑based diffusion models</strong> built for teaching and research. 
-          We explore how <em>information</em>, <em>behaviors</em>, and <em>innovations</em> spread through populations via local interactions. 
-          Implementations target <strong>Mesa</strong> with grid‑based visualization and optional network topologies.
-        </p>
-        <div class="cta">
-          <a class="btn primary" href="#demos">View Interactive Demos</a>
-          <a class="btn" href="#modeling">Modeling Details</a>
-        </div>
-      </div>
-      <div>
-        <div class="media card" aria-label="Hero media placeholder">
-          <div>
-            <div style="text-align:center; font-weight:700;">[ GIF / MP4 Placeholder ]</div>
-            <div style="font-size:.95rem; margin-top:8px; color:var(--muted);">Grid diffusion animation from Mesa (e.g., rumor spread).</div>
-          </div>
-        </div>
-      </div>
-    </section>
+<div class="section">
+  <h1>Agent-Based Modeling and Simulation (ABMS)</h1>
+  <p>
+    Agent-Based Modeling (ABM) is a <strong>bottom-up</strong>, <strong>microscale modeling</strong> approach 
+    where the system is described by <em>individual agents</em> (people, firms, particles, etc.) 
+    and their local interactions. 
+    From these simple rules emerge <strong>collective phenomena</strong> that cannot be 
+    easily predicted from top-down aggregate models.
+  </p>
+</div>
 
-    <section id="why-abm">
-      <h2>Why Agent‑Based Models for Diffusion?</h2>
-      <div class="grid cols-2">
-        <div class="card">
-          <h3>Local Rules → Global Patterns</h3>
-          <p>
-            Diffusion emerges from <em>microscopic</em> interactions: agents encounter neighbors, evaluate credibility/utility, and update their internal state.
-            ABM captures heterogeneity, spatial embedding, and network effects that aggregate into <strong>macroscopic adoption curves</strong> and spatial waves.
-          </p>
-          <ul>
-            <li><strong>Heterogeneity:</strong> varied thresholds, trust, risk, memory.</li>
-            <li><strong>Topology:</strong> lattice grids, small‑world, scale‑free, empirical networks.</li>
-            <li><strong>Context:</strong> media influence, influencers, institutional nudges.</li>
-          </ul>
-        </div>
-        <div class="card">
-          <h3>Bridging Theory & Visualization</h3>
-          <p>
-            ABM complements analytical models (e.g., Bass, threshold models) by providing <strong>visual, scenario‑rich simulations</strong> to test what‑if policies, seeding strategies, and 
-            robustness under uncertainty.
-          </p>
-          <ul>
-            <li>Reproduce S‑curves and tipping points.</li>
-            <li>Map spatial frontiers of adoption.</li>
-            <li>Compare policies: seeding hubs vs. random seeding.</li>
-          </ul>
-        </div>
-      </div>
-    </section>
+<div class="section">
+  <h2>Simple Diffusion Model</h2>
+  <p>
+    In this demo, we simulate a <strong>diffusion process</strong> where agents can represent 
+    the spread of an <em>innovation</em>, <em>virus infection</em>, or <em>social news</em>. 
+    Initially, a set of agents are marked as <span style="color:red;">infected</span> 
+    while others are <span style="color:green;">non-infected</span>. 
+    Each time step:
+  </p>
+  <ul>
+    <li>Agents move randomly on a grid.</li>
+    <li>When an infected agent interacts with a non-infected one, 
+        the latter’s infection level increases.</li>
+    <li>Once the infection level passes a threshold, the agent becomes infected.</li>
+  </ul>
+  <p>
+    By changing initial values (grid size, number of infected, infection rate), 
+    we can investigate <strong>how diffusion dynamics unfold</strong>.
+  </p>
+</div>
 
-    <section id="scenarios">
-      <h2>Real‑World Scenarios</h2>
-      <div class="grid cols-3">
-        <div class="card">
-          <h3>Social News Spreading</h3>
-          <p>Agents transition from <em>Unaware → Aware → Sharing → Dormant</em> based on credibility, repetition, and peer pressure. Visualized as colored cells on a grid.</p>
-          <ul>
-            <li>Parameters: share probability, forgetting rate, media injection.</li>
-            <li>Outcomes: reach, time‑to‑saturation, spatial clusters.</li>
-          </ul>
-          <span class="badge">Demo: rumor.html</span>
-        </div>
-        <div class="card">
-          <h3>Innovation Diffusion</h3>
-          <p>Threshold‑based adoption (Granovetter/Schelling style) or Bass‑type external/internal influence. Agents adopt when utility or social signal exceeds a personal threshold.</p>
-          <ul>
-            <li>Parameters: threshold distribution, external advertising (p), social contagion (q).</li>
-            <li>Outcomes: S‑curve shape, critical mass, lock‑in.</li>
-          </ul>
-          <span class="badge">Demo: innovation.html</span>
-        </div>
-        <div class="card">
-          <h3>Competing Innovations</h3>
-          <p>Two products or narratives (A vs. B) compete for attention. Switching costs and homophily shape spatial domains and market share dynamics.</p>
-          <ul>
-            <li>Parameters: relative utility, switching cost, cross‑influence.</li>
-            <li>Outcomes: coexistence vs. dominance; boundary dynamics.</li>
-          </ul>
-          <span class="badge">Demo: compete.html</span>
-        </div>
-      </div>
-    </section>
+<div class="section">
+  <h2>Video Demonstration</h2>
+  <video controls>
+    <source src="abm_diffusion_demo.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+  <p>
+    <em>Figure:</em> A capture of the diffusion model in action. 
+    Red = infected agents, Green = non-infected agents. 
+    Over time, infection spreads through local interactions.
+  </p>
+</div>
 
-    <section id="modeling">
-      <h2>Modeling Patterns</h2>
-      <div class="grid cols-2">
-        <div class="card">
-          <h3>State Machines</h3>
-          <p>Agents carry a <strong>state</strong> and <strong>memory</strong>:</p>
-          <ul>
-            <li><em>Rumor</em>: Unaware (U) → Aware (A) → Sharing (S) → Dormant (D).</li>
-            <li><em>Innovation</em>: Non‑adopter (N) → Adopter (Y).</li>
-          </ul>
-          <p>Transitions depend on neighbor counts, credibility weights, thresholds, and exogenous inputs (media).</p>
-        </div>
-        <div class="card">
-          <h3>Canonical Equations (for calibration)</h3>
-          <ul>
-            <li><strong>Bass model:</strong> <code>dA/dt = p (M − A) + q A (M − A)/M</code></li>
-            <li><strong>Linear threshold:</strong> adopt if <code>∑ w_i x_i ≥ θ</code></li>
-            <li><strong>Independent cascade:</strong> each adopter has one chance to activate a neighbor with prob <code>p</code></li>
-          </ul>
-          <p>ABM can reproduce or deviate from these baselines depending on topology and heterogeneity, enabling hypothesis testing.</p>
-        </div>
-        <div class="card">
-          <h3>Mesa Implementation Notes</h3>
-          <ul>
-            <li>Use <code>MultiGrid</code> for spatial embedding; <code>CanvasGrid</code> for live visualization.</li>
-            <li>Scheduler: <code>RandomActivation</code> or <code>SimultaneousActivation</code> for diffusion fairness.</li>
-            <li>DataCollector: track adoption rate, frontier size, cluster count, and R(t).</li>
-            <li>Seed strategies: random, central, high‑degree (if using network), or targeted cells.</li>
-          </ul>
-        </div>
-        <div class="card">
-          <h3>Metrics & Outputs</h3>
-          <ul>
-            <li><strong>Temporal:</strong> adoption curve, peak sharing time, time‑to‑50%.</li>
-            <li><strong>Spatial:</strong> Moran’s I, cluster size distribution, wavefront speed.</li>
-            <li><strong>Policy:</strong> ROI of seeding strategies; sensitivity to thresholds and media.</li>
-          </ul>
-        </div>
-      </div>
-    </section>
+<div class="section">
+  <h2>About Mesa</h2>
+  <p>
+    This model was built with <a href="https://mesa.readthedocs.io/en/stable/" target="_blank">Mesa</a>, 
+    a Python framework for Agent-Based Modeling. 
+    Mesa provides tools to build, visualize, and analyze ABMs directly in Python 
+    and runs in the browser for easy demonstration.  
+  </p>
+  <p>
+    The version used here is <strong>Mesa 2.4</strong>, which retains the classic 
+    <code>CanvasGrid</code> and <code>ChartModule</code> visualization components 
+    (later replaced in Mesa 3.x). 
+  </p>
+</div>
 
-    <section id="visuals">
-      <h2>Visuals</h2>
-      <div class="grid cols-2">
-        <div class="card">
-          <h3>Grid Animations</h3>
-          <p>Animated GIF/MP4 exports from Mesa showing spread dynamics over time. Placeholders below (replace with renders).</p>
-          <div class="media" aria-label="Animation placeholder">rumor_spread.gif</div>
-        </div>
-        <div class="card">
-          <h3>Adoption Curves</h3>
-          <p>Plot adoption vs. time and compare against Bass or threshold baselines for calibration and interpretation.</p>
-          <div class="media" aria-label="Chart placeholder">adoption_curve.png</div>
-        </div>
-      </div>
-    </section>
+<div class="section">
+  <h2>Further Reading</h2>
+  <p class="citation">
+    One of the earliest and most influential works on agent-based modeling of diffusion is:<br>
+    <strong>Thomas C. Schelling (1971).</strong> 
+    “Dynamic Models of Segregation.” 
+    <em>Journal of Mathematical Sociology</em>, 1(2):143–186.<br>
+    <a href="https://doi.org/10.1080/0022250X.1971.9989794" target="_blank">DOI link</a>
+  </p>
+  <p class="citation">
+    Another foundational reference is:<br>
+    <strong>Joshua M. Epstein & Robert Axtell (1996).</strong> 
+    <em>Growing Artificial Societies: Social Science from the Bottom Up.</em> 
+    Brookings Institution Press / MIT Press.
+  </p>
+</div>
 
-    <section id="demos">
-      <h2>Interactive Demos</h2>
-      <p>Each demo is a self‑contained Mesa app (launched via <code>mesa runserver</code> or embedded with <code>Mesa</code> visualization modules). Link these pages to your GitHub Pages builds or host separately.</p>
-      <div class="grid cols-3">
-        <a class="card" href="rumor.html">
-          <h3>Rumor / News Spread</h3>
-          <p>U→A→S→D diffusion on a grid; tune share probability, media injection, forgetting.</p>
-          <span class="badge">Open demo</span>
-        </a>
-        <a class="card" href="innovation.html">
-          <h3>Innovation Adoption</h3>
-          <p>Threshold or Bass‑like adoption; heterogeneous θ; visualize tipping behavior.</p>
-          <span class="badge">Open demo</span>
-        </a>
-        <a class="card" href="compete.html">
-          <h3>Competing Innovations</h3>
-          <p>Two narratives/products compete with switching cost and homophily.</p>
-          <span class="badge">Open demo</span>
-        </a>
-      </div>
-      <div class="kpi">
-        <div class="card"><div class="num">Grid: 50×50</div><div class="mini">default</div></div>
-        <div class="card"><div class="num">Scheduler: Random</div><div class="mini">per‑step</div></div>
-        <div class="card"><div class="num">Seed: 1–5%</div><div class="mini">initial adopters</div></div>
-        <div class="card"><div class="num">Runs: 30</div><div class="mini">for averages</div></div>
-      </div>
-    </section>
-
-    <section id="how-to">
-      <h2>How to Run</h2>
-      <div class="card">
-        <ol>
-          <li>Install dependencies: <code>pip install mesa numpy matplotlib</code></li>
-          <li>Run a demo: <code>mesa runserver rumor</code> (or open the HTML if you embed viz outputs)</li>
-          <li>Export frames to GIF/MP4 for the Visuals section</li>
-        </ol>
-        <p><em>Tip:</em> For reproducible experiments, script batch runs and store metrics to CSV for plotting.</p>
-      </div>
-    </section>
-
-    <section id="credits">
-      <h2>Credits & References</h2>
-      <div class="card">
-        <p>Core ideas draw on classic diffusion theory and network contagion:</p>
-        <ul>
-          <li>Bass, F.M. (1969). A new product growth model for consumer durables.</li>
-          <li>Granovetter, M. (1978). Threshold models of collective behavior.</li>
-          <li>Independent Cascade & Linear Threshold (Kempe, Kleinberg, Tardos, 2003).</li>
-          <li>Mesa: <a href="https://mesa.readthedocs.io/" target="_blank" rel="noopener">Documentation</a></li>
-        </ul>
-      </div>
-    </section>
-
-    <footer>
-      <div class="grid cols-2">
-        <div>
-          <strong>ABM Diffusion Showcase</strong><br/>
-          Teaching & research demos for information and innovation diffusion.
-        </div>
-        <div style="text-align:right;">
-          <a href="#overview">Back to top ↑</a>
-        </div>
-      </div>
-    </footer>
-  </div>
 </body>
-  <footer style="margin-top: 3em; font-size: 0.85em; color: #666;">
-    Last updated: March 2025 • Author: Sanjjamts Amartaivan
-  </footer>
-  
 </html>
-
