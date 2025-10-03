@@ -17,6 +17,7 @@ Clone the repo and install dependencies (recommend using a virtual environment):
 git clone https://github.com/amartaivan-s/abms/diffusion-model.git
 cd diffusion-model
 pip install -r requirements.txt
+```
 
 ## ▶️ Run
 
