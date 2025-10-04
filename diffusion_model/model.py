@@ -48,14 +48,13 @@ class DiffusionModel(Model):
         # Data collector
         self.datacollector = DataCollector(
             model_reporters={
-                "Infected": lambda m: sum(1 for ag in m.schedule.agents if ag.infected),
-                "Susceptible": lambda m: sum(1 for ag in m.schedule.agents if not ag.infected),
-                "AvgInfectedLevel": lambda m: (
-                    sum(ag.infected_level for ag in m.schedule.agents) / len(m.schedule.agents)
-                )
+                "infected": DiffusionModel.current_infected,
+                "susceptible": DiffusionModel.current_susceptible,
+                "avg_Level": DiffusionModel.current_infected_level
             }
         )
 
+        
         self.running = True
 
     def step(self):
@@ -65,3 +64,18 @@ class DiffusionModel(Model):
         # Stop automatically if everyone infected
         if all(ag.infected for ag in self.schedule.agents):
             self.running = False
+
+    @staticmethod
+
+    def current_infected(model) -> int:
+        return sum(1 for ag in model.schedule.agents if ag.infected)
+
+    @staticmethod
+
+    def current_susceptible(model) -> int:
+        return sum(1 for ag in model.schedule.agents if not ag.infected)
+
+    @staticmethod
+    def current_infected_level(model) -> float:
+        return sum(ag.infected_level for ag in model.schedule.agents) / len(model.schedule.agents)
+                
