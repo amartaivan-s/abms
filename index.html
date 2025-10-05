@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Interactive Showcases of Agent-Based Modeling and Simulation (ABMS)</title>
+<style>
+  :root {
+    --accent: #007acc;
+    --ink: #333;
+    --bg: #fafafa;
+    --border: #e0e0e0;
+  }
+
+  body {
+    font-family: "Noto Sans", Arial, sans-serif;
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 24px;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.7;
+  }
+
+  header {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+
+  header h1 {
+    font-size: 1.9em;
+    color: var(--ink);
+  }
+
+  header p {
+    font-size: 1.1em;
+    color: #555;
+  }
+
+  .lang-switch {
+    text-align: right;
+    margin-top: -20px;
+    margin-bottom: 20px;
+  }
+
+  .lang-switch a {
+    color: var(--accent);
+    font-weight: bold;
+    text-decoration: none;
+  }
+
+  .lang-switch a:hover {
+    text-decoration: underline;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 22px;
+  }
+
+  .card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    transition: transform 0.15s ease;
+    overflow: hidden;
+  }
+
+  .card:hover {
+    transform: translateY(-5px);
+  }
+
+  .card img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .card-content {
+    padding: 16px;
+  }
+
+  .card-content h3 {
+    margin: 0 0 8px 0;
+    color: var(--ink);
+  }
+
+  .card-content p {
+    color: #666;
+    font-size: 0.95em;
+  }
+
+  .details-link {
+    display: inline-block;
+    margin-top: 12px;
+    color: var(--accent);
+    font-weight: bold;
+    text-decoration: none;
+  }
+
+  .details-link:hover {
+    text-decoration: underline;
+  }
+
+  footer {
+    text-align: center;
+    margin-top: 60px;
+    font-size: 0.9em;
+    color: #777;
+  }
+</style>
+</head>
+<body>
+
+<p><a href="https://amartaivan-s.github.io/">🏠 Home</a></p>
+<div class="lang-switch">
+  <a href="index_mn.html">Монгол хэл</a>
+</div>
+
+<header>
+  <h1>🧩 Interactive Showcases of Agent-Based Modeling and Simulation (ABMS)</h1>
+  <p>
+    Agent-Based Modeling (ABM) is a bottom-up, microscale modeling approach where the system is described by individual agents (people, firms, particles, etc.) and their local interactions. 
+    From these simple rules emerge collective phenomena that cannot be easily predicted from top-down aggregate models.
+    This section introduces a collection of interactive prototype models demonstrating the principles of agent-based modeling — from diffusion processes and collective motion to decision-making and emergent phenomena.
+  </p>
+</header>
+
+<div class="card">
+    <img src="images/diffusion_thumb.png" alt="Diffusion Model" />
+    <div class="card-content">
+      <h3>Diffusion Model</h3>
+      <p>Simulates the spread of information, ideas, or diseases through agent
+      networks in continuous or discrete space.</p>
+      <a href="prototypes/diffusion.html" class="details-link">▶ Open Demo</a>
+</div>
+      
+  </div>
+<section class="grid">
+  <div class="card">
+    <img src="images/flocking_thumb.png" alt="Flocking Behavior Simulation" />
+    <div class="card-content">
+      <h3>Flocking Behavior</h3>
+      <p>Demonstrates how simple local interaction rules among agents can lead to
+      collective patterns like alignment and cohesion.</p>
+      <p style="color: #999; font-style: italic;">🚧 Coming soon</p>
+
+    </div>
+  </div>
+
+  <div class="card">
+    <img src="images/evacuation_thumb.png" alt="Evacuation Simulation" />
+    <div class="card-content">
+      <h3>Evacuation Dynamics</h3>
+      <p>Models pedestrian evacuation behavior under different environmental
+      layouts and stress conditions.</p>
+      <p style="color: #999; font-style: italic;">🚧 Coming soon</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <img src="images/socialforce_thumb.png" alt="Social Force Model" />
+    <div class="card-content">
+      <h3>Social Force Model</h3>
+      <p>Recreates realistic pedestrian movement based on physical and
+      psychological forces influencing individual motion.</p>
+      <p style="color: #999; font-style: italic;">🚧 Coming soon</p>
+    </div>
+  </div>
+</section>
+
+<footer style="margin-top: 3em; font-size: 0.85em; color: #666;">
+    Last updated: June 2025 • Author: Sanjjamts Amartaivan
+  </footer>
+
+</body>
+</html>
