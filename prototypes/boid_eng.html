@@ -254,16 +254,11 @@ class BoidQtViewer(QtWidgets.QMainWindow):
         brushes = [pg.mkBrush(colors[l % n_clusters]) for l in labels]
         self.scatter.setData(xs, ys, brush=brushes)
 </code></pre>
-
+    
+    <div class="section">
     <p>
       <strong>Demo clip:</strong>
-    </p>
-    <video autoplay muted loop playsinline>
-      <!-- Replace with your own path -->
       <img src="../images/boids_pyqtgraph_demo.gif">
-      Your browser does not support the video tag.
-    </video>
-    <p>
       <em>Figure:</em> Boids simulated in Mesa with dynamic swarm coloring using a proximity-based clusterer (Population = 300.0, speed = 3.0, vision = 10.0, radius = 6.0, seperation = 1.0). Over time, the boids self-organize into distinct flocks (swarms) that move cohesively across the environment..
      
     </p>
