@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Boid Flocking (ABMS Showcase)</title>
+  <style>
+    body { 
+      font-family: sans-serif; 
+      line-height: 1.6; 
+      margin: 0; 
+      background: #f8f9fa;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 2rem;
+      background: #fff;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    img, video { max-width: 100%; height: auto; margin: 1rem 0; border-radius: 6px; }
+    .section { margin-bottom: 2rem; }
+    h1, h2 { color: #2c3e50; text-align: center; }
+    p, ul { text-align: justify; }
+    a { color: #1f77b4; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .citation { font-size: 0.95rem; color: #555; }
+    .home-link { text-align: center; margin-bottom: 2rem; }
+    .btn {
+      display:inline-block; padding:0.55rem 1rem; background:#1f77b4; 
+      color:#fff; border-radius:6px; text-decoration:none; font-weight:600;
+    }
+    .btn:hover { filter: brightness(1.05); }
+    .param-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0;
+      font-size: 0.98rem;
+    }
+    .param-table th, .param-table td {
+      border: 1px solid #e3e6ea;
+      padding: 0.6rem 0.7rem;
+      vertical-align: top;
+    }
+    .param-table th {
+      background: #f3f5f7; text-align: left; color: #2c3e50;
+    }
+    code, pre { background:#f5f7f9; border:1px solid #e6e9ef; border-radius:6px; }
+    pre { padding: 1rem; overflow:auto; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <p class="home-link"><a href="https://amartaivan-s.github.io/abms/">🏠 Back</a></p>
+
+  <div class="section">
+    <h2>Boid Flocking</h2>
+    <p>
+      This page presents a classic <strong>boid flocking</strong> model—an archetypal
+      Agent-Based Modeling (ABM) example showing how <em>simple local rules</em> can produce
+      <em>complex collective behavior</em> such as flocking, swarming, or schooling.
+      We cover the theory and origin of Boids, a Mesa 2.4 implementation, the key parameters,
+      and a <strong>custom PyQtGraph visualization</strong> that colors dynamically detected swarms.
+    </p>
+  </div>
+
+  <div class="section">
+    <h2>Theory &amp; Origin</h2>
+    <p>
+      The Boids model was introduced by <strong>Craig W. Reynolds (1987)</strong> to simulate
+      the lifelike motion of flocks using three simple rules applied locally by each agent (boid):
+    </p>
+    <ul>
+      <li><strong>Separation:</strong> Avoid crowding neighbors.</li>
+      <li><strong>Alignment:</strong> Steer towards the average heading of neighbors.</li>
+      <li><strong>Cohesion:</strong> Steer towards the average position (center of mass) of neighbors.</li>
+    </ul>
+    <p>
+      When combined with a limited perception radius, these rules yield emergent, coordinated group motion.
+      See the <a href="https://en.wikipedia.org/wiki/Boids" target="_blank">Boids (Wikipedia)</a> overview,
+      and Mesa’s modern example
+      <a href="https://mesa.readthedocs.io/stable/examples/basic/boid_flockers.html" target="_blank">Boid Flockers (Mesa 3.x)</a>.
+    </p>
+  </div>
+
+  <div class="section">
+    <h2>Key Parameters</h2>
+    <table class="param-table">
+      <thead>
+        <tr><th>Parameter</th><th>Meaning</th><th>Typical Effect</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>population</code></td>
+          <td>Number of boids (agents) in the environment.</td>
+          <td>Higher values increase density and interaction, often strengthening flock formation.</td>
+        </tr>
+        <tr>
+          <td><code>width</code>, <code>height</code></td>
+          <td>Continuous space size (environment bounds).</td>
+          <td>Smaller spaces raise encounter frequency; larger spaces disperse flocks.</td>
+        </tr>
+        <tr>
+          <td><code>speed</code></td>
+          <td>Preferred speed or max velocity per step.</td>
+          <td>Higher speed increases dynamism; may require higher vision/separation to remain stable.</td>
+        </tr>
+        <tr>
+          <td><code>vision</code></td>
+          <td>Perception radius (how far a boid senses neighbors).</td>
+          <td>Too small → fragmented motion; too large → over-synchronization or “traffic jams”.</td>
+        </tr>
+        <tr>
+          <td><code>separation</code></td>
+          <td>Repulsion distance / weight to prevent crowding.</td>
+          <td>Higher values spread agents out; too high can fragment flocks.</td>
+        </tr>
+        <tr>
+          <td><code>alignment_weight</code>, <code>cohesion_weight</code>, <code>separation_weight</code></td>
+          <td>Weights for the three steering forces (if exposed in your model).</td>
+          <td>Balances smoothness vs. responsiveness; tuning is key for realistic flocking.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <h2>Mesa 2.4 Implementation (Classic Server)</h2>
+    <p>
+      Below is a minimal sketch of the classic Mesa 2.x server for Boids. It uses
+      the legacy <code>ModularServer</code> + JS canvas components (pre-Solara).
+      If you are on Mesa 3.x+, refer to the Solara example linked above.
+    </p>
+
+<pre><code># server.py (Mesa 2.4 style)
+from mesa.visualization.ModularVisualization import ModularServer
+from SimpleContinuousModule import SimpleCanvas
+from model import BoidFlockers
+
+def boid_draw(agent):
+    return {"Shape": "circle", "r": 2, "Filled": "true", "Color": "Red"}
+
+boid_canvas = SimpleCanvas(boid_draw, 500, 500)
+model_params = dict(population=100, width=100, height=100, speed=5, vision=10, separation=2)
+
+server = ModularServer(BoidFlockers, [boid_canvas], "Boid Flockers", model_params)
+
+# run.py
+from server import server
+server.launch(open_browser=True)
+</code></pre>
+
+    <p>
+      For Mesa ≥ 3.x, visualization is Solara-based; porting is required (no JS injection).
+      See: <a href="https://mesa.readthedocs.io/stable/examples/basic/boid_flockers.html" target="_blank">Mesa 3.x Boid Flockers</a>.
+    </p>
+  </div>
+
+  <div class="section">
+    <h2>Custom Visualization (PyQtGraph)</h2>
+    <p>
+      To avoid browser dependencies and gain speed, we use a <strong>PyQtGraph</strong> viewer.
+      It steps the model via a <code>QTimer</code>, draws boids as a scatter, and adds
+      <em>dynamic swarm coloring</em> based on proximity (clusters are recolored each frame).
+    </p>
+
+<pre><code># run_pyqt.py (launcher)
+import sys
+from PyQt6 import QtWidgets
+from view_pyqt import BoidQtViewer
+from model import BoidFlockers
+
+params = dict(population=100, width=100, height=100, speed=5, vision=10, separation=2)
+model = BoidFlockers(**params)
+
+app = QtWidgets.QApplication(sys.argv)
+viewer = BoidQtViewer(model=model, fps=30, point_size=8.0, swarm_radius=6.0)
+viewer.show()
+sys.exit(app.exec())
+</code></pre>
+
+<pre><code># view_pyqt.py (core viewer: dynamic clustering + coloring)
+from PyQt6 import QtCore, QtWidgets
+import pyqtgraph as pg
+import numpy as np
+import random
+
+class BoidQtViewer(QtWidgets.QMainWindow):
+    def __init__(self, model, fps=30, point_size=6.0, swarm_radius=5.0, parent=None):
+        super().__init__(parent)
+        self.model = model
+        self.ms_per_frame = int(1000 / max(1, fps))
+        self.swarm_radius = swarm_radius
+
+        self.setWindowTitle("Boid Flockers — PyQtGraph (Dynamic Swarm Coloring)")
+        self.resize(1000, 800)
+
+        self.canvas = pg.GraphicsLayoutWidget(show=True)
+        self.setCentralWidget(self.canvas)
+        self.plot = self.canvas.addPlot()
+        self.plot.setAspectLocked(True)
+        self.plot.showGrid(x=True, y=True, alpha=0.3)
+
+        sxmin = getattr(self.model.space, "x_min", 0.0)
+        sxmax = getattr(self.model.space, "x_max", 100.0)
+        symin = getattr(self.model.space, "y_min", 0.0)
+        symax = getattr(self.model.space, "y_max", 100.0)
+        self.plot.setXRange(sxmin, sxmax)
+        self.plot.setYRange(symin, symax)
+
+        self.scatter = pg.ScatterPlotItem(pxMode=False, size=point_size, name="Agents")
+        self.plot.addItem(self.scatter)
+
+        self.timer = QtCore.QTimer(self)
+        self.timer.timeout.connect(self._step_and_render)
+        self.timer.start(self.ms_per_frame)
+
+    def _detect_swarms(self, positions, radius=5.0):
+        N = len(positions)
+        labels = np.full(N, -1, dtype=int)
+        cluster_id = 0
+        for i in range(N):
+            if labels[i] != -1:
+                continue
+            labels[i] = cluster_id
+            stack = [i]
+            while stack:
+                j = stack.pop()
+                dists = np.linalg.norm(positions[j] - positions, axis=1)
+                neighbors = np.where((labels == -1) & (dists &lt; radius))[0]
+                labels[neighbors] = cluster_id
+                stack.extend(neighbors)
+            cluster_id += 1
+        return labels
+
+    def _make_group_colors(self, n_groups):
+        random.seed(42)
+        return [(random.randint(50,255), random.randint(50,255), random.randint(50,255))
+                for _ in range(n_groups)]
+
+    def _step_and_render(self):
+        self.model.step()
+        agents = list(getattr(self.model.schedule, "agents", []))
+        if not agents:
+            return
+
+        positions = np.array([a.pos for a in agents])
+        xs, ys = positions[:,0], positions[:,1]
+
+        labels = self._detect_swarms(positions, radius=self.swarm_radius)
+        n_clusters = len(np.unique(labels))
+        colors = self._make_group_colors(n_clusters)
+        brushes = [pg.mkBrush(colors[l % n_clusters]) for l in labels]
+        self.scatter.setData(xs, ys, brush=brushes)
+</code></pre>
+
+    <p>
+      <strong>Demo clip:</strong>
+    </p>
+    <video autoplay muted loop playsinline>
+      <!-- Replace with your own path -->
+      <source src="../images/boids_pyqtgraph_demo.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+    <p>
+      <em>Figure:</em> Boids simulated in Mesa with dynamic swarm coloring via a proximity-based clusterer (radius = 6.0).
+    </p>
+  </div>
+
+  <div class="section">
+    <h2>Download / View Source</h2>
+    <p>
+      <!-- Update to your actual repo path/folder name -->
+      <a class="btn" href="https://github.com/amartaivan-s/abms/tree/main/boids_flockers" target="_blank">📥 Boids (Source)</a>
+      &nbsp;&nbsp;
+      <a class="btn" href="https://github.com/amartaivan-s/abms" target="_blank">Repo Home</a>
+    </p>
+  </div>
+
+  <div class="section">
+    <h2>Further Reading</h2>
+    <p class="citation">
+      <strong>Craig W. Reynolds (1987).</strong> “Flocks, Herds, and Schools: A Distributed Behavioral Model.”
+      <em>SIGGRAPH ’87</em>, 21(4), 25–34.
+      <!-- If you have a stable link, add it here -->
+      (<a href="https://en.wikipedia.org/wiki/Boids" target="_blank">Wikipedia summary</a>)
+    </p>
+    <p class="citation">
+      <strong>Mesa 3.x Boid Flockers:</strong>
+      <a href="https://mesa.readthedocs.io/stable/examples/basic/boid_flockers.html" target="_blank">
+        https://mesa.readthedocs.io/stable/examples/basic/boid_flockers.html
+      </a>
+    </p>
+    <p class="citation">
+      <strong>Mesa (Framework):</strong>
+      <a href="https://mesa.readthedocs.io/en/stable/" target="_blank">
+        https://mesa.readthedocs.io/en/stable/
+      </a>
+    </p>
+  </div>
+
+</div>
+</body>
+</html>
